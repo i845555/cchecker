@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <None Include="Grammar/CCalc.g4" />
+    <None Include="Grammar/CSharp.g4" />
   </ItemGroup>
 
 </Project>
