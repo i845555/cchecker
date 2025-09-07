@@ -35,8 +35,8 @@ internal static class Program
 
             var tree = parser.prog();
 
-            // Traverse tree to find methods longer than 5 lines; print only the filename once if any exist
-            PrintLongMethods(tree, codeText, minLinesExclusive: 5, filePath: path);
+            // Traverse tree to find methods longer than 5 lines and print them
+            PrintLongMethods(tree, codeText, minLinesExclusive: 5);
 
             return 0;
         }
@@ -52,7 +52,7 @@ internal static class Program
         }
     }
 
-    private static void PrintLongMethods(IParseTree tree, string sourceText, int minLinesExclusive, string filePath)
+    private static void PrintLongMethods(IParseTree tree, string sourceText, int minLinesExclusive)
     {
         void Walk(IParseTree node)
         {
@@ -67,8 +67,13 @@ internal static class Program
                         var lineCount = (stop.Line - start.Line + 1);
                         if (lineCount > minLinesExclusive)
                         {
-                            var methodName = TryGetMethodName(prc) ?? "<unknown>";
-                            Console.WriteLine($"{Path.GetFileName(filePath)}: {methodName}");
+                            var startIdx = start.StartIndex;
+                            var stopIdx = stop.StopIndex;
+                            if (startIdx >= 0 && stopIdx >= startIdx && stopIdx < sourceText.Length)
+                            {
+                                var snippet = sourceText.Substring(startIdx, stopIdx - startIdx + 1);
+                                Console.WriteLine(snippet);
+                            }
                         }
                     }
                 }
@@ -91,23 +96,9 @@ internal static class Program
         Walk(tree);
     }
 
-    private static string? TryGetMethodName(ParserRuleContext methodCtx)
-    {
-        // Find the '(' token inside the method declaration and take the previous terminal token as method name
-        for (int i = 0; i < methodCtx.ChildCount; i++)
-        {
-            if (methodCtx.GetChild(i) is ITerminalNode t && t.Symbol.Text == "(")
-            {
-                for (int j = i - 1; j >= 0; j--)
-                {
-                    if (methodCtx.GetChild(j) is ITerminalNode prev)
-                    {
-                        return prev.Symbol.Text;
-                    }
-                }
-                break;
-            }
-        }
-        return null;
+        public void Parses_Parentheses_With_Precedence()
+    {        var tree = Parse("(1+2)*3");
+        // Should still contain both '+' and '*'
+
     }
 }
