@@ -135,7 +135,11 @@ namespace cchecker.Parser
             {
                 throw new ParseCanceledException($"Mismatched token {t.Text}, expecting type {ttype}");
             }
-            _input.Consume();
+            // Do not consume EOF token; BufferedTokenStream prohibits consuming EOF
+            if (ttype != TokenConstants.EOF)
+            {
+                _input.Consume();
+            }
             return t;
         }
 
