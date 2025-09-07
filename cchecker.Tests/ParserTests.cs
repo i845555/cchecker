@@ -2,6 +2,7 @@ using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using cchecker.Parser;
 using Xunit;
+using AwesomeAssertions;
 
 namespace cchecker.Tests;
 
@@ -20,9 +21,9 @@ public class ParserTests
     {
         var tree = Parse("1+2*3");
         var treeStr = Trees.ToStringTree(tree, CCalcParser.RuleNames);
-        Assert.Contains("+", treeStr);
-        Assert.Contains("*", treeStr);
-        Assert.EndsWith("<EOF>)", treeStr);
+        treeStr.Should().Contain("+");
+        treeStr.Should().Contain("*");
+        treeStr.Should().EndWith("<EOF>)");
     }
 
     [Fact]
@@ -31,7 +32,7 @@ public class ParserTests
         var tree = Parse("(1+2)*3");
         var treeStr = Trees.ToStringTree(tree, CCalcParser.RuleNames);
         // Should still contain both '+' and '*'
-        Assert.Contains("+", treeStr);
-        Assert.Contains("*", treeStr);
+        treeStr.Should().Contain("+");
+        treeStr.Should().Contain("*");
     }
 }

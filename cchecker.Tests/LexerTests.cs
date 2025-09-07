@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Antlr4.Runtime;
 using cchecker.Parser;
 using Xunit;
+using AwesomeAssertions;
 
 namespace cchecker.Tests;
 
@@ -24,7 +25,7 @@ public class LexerTests
     public void Lexes_Integers_And_Operators()
     {
         var types = LexTypes("12+3*(4-5)/6");
-        Assert.Equal(new[]
+        types.Should().Equal(new[]
         {
             CCalcLexer.INT,
             CCalcLexer.ADD,
@@ -37,13 +38,13 @@ public class LexerTests
             CCalcLexer.RPAREN,
             CCalcLexer.DIV,
             CCalcLexer.INT
-        }, types);
+        });
     }
 
     [Fact]
     public void Skips_Whitespace()
     {
         var types = LexTypes("1 + 2\n  * 3\t");
-        Assert.Equal(new[] { CCalcLexer.INT, CCalcLexer.ADD, CCalcLexer.INT, CCalcLexer.MUL, CCalcLexer.INT }, types);
+        types.Should().Equal(new[] { CCalcLexer.INT, CCalcLexer.ADD, CCalcLexer.INT, CCalcLexer.MUL, CCalcLexer.INT });
     }
 }
