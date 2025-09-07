@@ -18,7 +18,7 @@ public class ProgramTests
     [Fact]
     public void Main_FileNotFound_Returns2()
     {
-        var code = Program.Main(new[] { "nonexistent_file_12345.ccalc" });
+        var code = Program.Main(new[] { "nonexistent_file_12345.cs" });
         code.Should().Be(2);
     }
 
@@ -28,7 +28,8 @@ public class ProgramTests
         var tmp = Path.GetTempFileName();
         try
         {
-            File.WriteAllText(tmp, "1+2*3");
+            // minimal valid C# for our simplified grammar
+            File.WriteAllText(tmp, "public class C { int x; public void M() { return; } }");
             var code = Program.Main(new[] { tmp });
             code.Should().Be(0);
         }

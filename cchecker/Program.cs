@@ -29,12 +29,12 @@ internal static class Program
             using var reader = new StreamReader(fs, Encoding.UTF8, detectEncodingFromByteOrderMarks: true);
             var input = new AntlrInputStream(reader);
 
-            var lexer = new CCalcLexer(input);
+            var lexer = new CSharpLexer(input);
             var tokens = new CommonTokenStream(lexer);
-            var parser = new CCalcParser(tokens);
+            var parser = new CSharpParser(tokens);
 
-            var tree = parser.Prog();
-            Console.WriteLine(Trees.ToStringTree(tree, CCalcParser.RuleNames));
+            var tree = parser.prog();
+            Console.WriteLine(Trees.ToStringTree(tree, parser.RuleNames));
             return 0;
         }
         catch (ParseCanceledException pce)
